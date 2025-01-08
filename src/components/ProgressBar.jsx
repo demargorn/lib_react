@@ -1,40 +1,29 @@
 import { Component } from 'react';
 
 class ProgressBar extends Component {
-   componentDidMount() {
+   drawProgressBar(radius, segment, color) {
       const canvas = document.getElementById('progressCanvas');
-      const outer = canvas.getContext('2d'); // внешнее кольцо
+      const ctx = canvas.getContext('2d');
 
-      function drawOuterProgressBar() {
-         outer.beginPath();
-         outer.arc(60, 60, 52, 0, 2 * Math.PI);
-         outer.lineWidth = 7;
-         outer.strokeStyle = '#4ca89a';
-         outer.stroke();
-         outer.closePath();
-      }
+      ctx.beginPath();
+      ctx.arc(60, 60, radius, 0, segment);
+      ctx.lineWidth = 7;
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      ctx.closePath();
+   }
 
-      drawOuterProgressBar();
+   componentDidMount() {
+      this.drawProgressBar(52, 2 * Math.PI, '#4ca89a');
+      this.drawProgressBar(45, this.props.completed / 2, '#96d6f4');
    }
 
    componentDidUpdate(oldProps) {
-      const { total, completed } = this.props; 
+      const { total, completed } = this.props;
 
-      function drawInnerProgressBar() {
-         const canvas = document.getElementById('progressCanvas');
-         const inner = canvas.getContext('2d'); // внутреннее кольцо
-
-         if (oldProps.completed !== total) {
-            inner.beginPath();
-            inner.arc(60, 60, 45, 0 , 2 * Math.PI * (completed / total));
-            inner.lineWidth = 7;
-            inner.strokeStyle = '#96d6f4';
-            inner.stroke();
-            inner.closePath();
-         }
+      if (oldProps.completed !== total) {
+         this.drawProgressBar(45, 2 * Math.PI * (completed / total), '#96d6f4');
       }
-
-      drawInnerProgressBar();
    }
 
    render() {
